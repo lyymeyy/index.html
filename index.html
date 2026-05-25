@@ -521,7 +521,6 @@ let nomorGuru = localStorage.getItem("nomorGuru") || "";
 let totalPoin = parseInt(localStorage.getItem("totalPoin")) || 0;
 let notifEnabled = localStorage.getItem("notifEnabled") === "true";
 
-/* MULAI */
 async function mulai(){
 
 nama =
@@ -557,7 +556,6 @@ requestNotificationPermission();
 
 }
 
-/* NOTIFIKASI */
 function toggleNotifications(){
 
 notifEnabled = !notifEnabled;
@@ -581,20 +579,6 @@ Notification.requestPermission();
 
 }
 
-function showPrayerNotification(sholat){
-
-if(!notifEnabled || Notification.permission !== "granted") return;
-
-new Notification("🕌 Waktunya Sholat " + sholat, {
-
-body: "Sekarang sudah masuk waktu sholat " + sholat + ". Yuk sholat! 🤲",
-icon: "https://cdn-icons-png.flaticon.com/512/3009/3009750.png"
-
-});
-
-}
-
-/* NOMOR GURU */
 function aturNomorGuru(){
 
 let nomor = prompt("Masukkan nomor guru:", nomorGuru);
@@ -618,7 +602,6 @@ alert("✅ Nomor guru berhasil disimpan!");
 
 }
 
-/* SETTINGS */
 function toggleSettingMenu(){
 
 const menu =
@@ -761,7 +744,6 @@ document.querySelector(
 
 }
 
-/* AMBIL JADWAL */
 async function ambilJadwal(){
 
 let kota = kotaSekarang;
@@ -841,7 +823,6 @@ html;
 
 }
 
-/* COUNTDOWN */
 function startCountdown(){
 
 setInterval(()=>{
@@ -932,7 +913,6 @@ detik + " detik";
 
 }
 
-/* ABSEN + KIRIM LAPORAN */
 function toggleLokasi(){
 
 const menu =
@@ -1060,21 +1040,15 @@ if(nomorGuru){
 
 if(confirm("Kirim laporan sholat ke guru via WhatsApp?")){
 
-const teks = encodeURIComponent(
+const pesan = 
 
-"Assalamu'alaikum,\n\n" +
+"Assalamu'alaikum%0A%0A" +
+"Saya%20" + encodeURIComponent(nama) + "%20telah%20selesai%20melaksanakan%20sholat%20" + sholat + "%0A" +
+"Pukul%3A%20" + jam + "%0A" +
+"Lokasi%3A%20" + lokasi + "%0A%0A" +
+"Semoga%20Allah%20menerima%20ibadah%20kita.%20%F0%9F%A4%B2";
 
-"Saya " + nama + " telah selesai melaksanakan sholat " + sholat + "\n" +
-
-"Pukul: " + jam + "\n" +
-
-"Lokasi: " + lokasi + "\n\n" +
-
-"Semoga Allah menerima ibadah kita. 🤲"
-
-);
-
-window.open(`https://wa.me/\( {nomorGuru}?text= \){teks}`, '_blank');
+window.open("https://wa.me/" + nomorGuru + "?text=" + pesan, '_blank');
 
 }
 
