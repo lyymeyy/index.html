@@ -1038,17 +1038,17 @@ alert(
 
 if(nomorGuru){
 
-if(confirm("Kirim laporan sholat ke guru via WhatsApp?")){
+if(confirm("Kirim laporan ke guru via WhatsApp?")){
 
-const pesan = 
+const teks = 
 
 "Assalamu'alaikum%0A%0A" +
-"Saya%20" + encodeURIComponent(nama) + "%20telah%20selesai%20melaksanakan%20sholat%20" + sholat + "%0A" +
+"Saya%20" + encodeURIComponent(nama) + "%20telah%20selesai%20sholat%20" + sholat + "%0A" +
 "Pukul%3A%20" + jam + "%0A" +
 "Lokasi%3A%20" + lokasi + "%0A%0A" +
-"Semoga%20Allah%20menerima%20ibadah%20kita.%20%F0%9F%A4%B2";
+"Semoga%20Allah%20menerima%20ibadah%20kita.%20🤲";
 
-window.open("https://wa.me/" + nomorGuru + "?text=" + pesan, '_blank');
+window.open("https://wa.me/" + nomorGuru + "?text=" + teks, "_blank");
 
 }
 
