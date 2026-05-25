@@ -554,6 +554,8 @@ if(notifEnabled){
 requestNotificationPermission();
 }
 
+autoUpdateJadwal();
+
 }
 
 function toggleNotifications(){
@@ -823,15 +825,22 @@ html;
 
 }
 
-// AUTO UPDATE JADWAL SETIAP HARI
 function autoUpdateJadwal(){
-    setInterval(async () => {
-        const sekarang = new Date();
-        if(sekarang.getHours() === 0 && sekarang.getMinutes() <= 10){
-            await ambilJadwal();
-            loadPuasa();
-        }
-    }, 300000); // cek setiap 5 menit
+
+setInterval(async () => {
+
+const sekarang = new Date();
+
+if(sekarang.getHours() === 0 && sekarang.getMinutes() <= 10){
+
+await ambilJadwal();
+
+loadPuasa();
+
+}
+
+}, 300000);
+
 }
 
 function startCountdown(){
@@ -1257,7 +1266,7 @@ html;
 
 window.onload = function(){
     mulai();
-    autoUpdateJadwal();   // Aktifkan auto update jadwal
+    autoUpdateJadwal();
 };
 </script>
 
