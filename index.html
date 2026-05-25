@@ -13,14 +13,12 @@ body{
 font-family:Arial,sans-serif;
 
 background:
-
 linear-gradient(
 rgba(0,0,0,0.55),
 rgba(0,0,0,0.7)
 ),
 
 url('https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=1400&auto=format&fit=crop');
-
 background-size:cover;
 background-position:center top;
 background-repeat:no-repeat;
@@ -34,14 +32,11 @@ overflow-x:hidden;
 
 }
 
-/* BINTANG */
-
 body::before{
 
 content:"";
 
 position:fixed;
-
 top:0;
 left:0;
 
@@ -72,8 +67,6 @@ z-index:-1;
 
 }
 
-/* CONTAINER */
-
 .container{
 
 max-width:520px;
@@ -93,8 +86,6 @@ border:
 
 }
 
-/* TEXT */
-
 h1,
 .subtitle{
 
@@ -107,8 +98,6 @@ text-align:center;
 color:#dbeafe;
 
 }
-
-/* CARD */
 
 .card{
 
@@ -123,8 +112,6 @@ margin-top:15px;
 
 }
 
-/* BUTTON */
-
 button{
 
 border:none;
@@ -138,8 +125,6 @@ cursor:pointer;
 font-weight:bold;
 
 }
-
-/* FLEX */
 
 .menu-flex{
 
@@ -160,8 +145,6 @@ color:#111827;
 
 }
 
-/* COUNTDOWN */
-
 .countdown{
 
 text-align:center;
@@ -176,8 +159,6 @@ margin:20px 0;
 
 }
 
-/* JADWAL */
-
 .waktu{
 
 display:flex;
@@ -191,8 +172,6 @@ border-bottom:
 
 }
 
-/* ABSEN */
-
 .absen-btn{
 
 width:100%;
@@ -202,16 +181,12 @@ color:white;
 
 }
 
-/* LOKASI */
-
 .lokasi-btn{
 
 background:#2563eb !important;
 color:white !important;
 
 }
-
-/* RED DAY */
 
 .red-btn{
 
@@ -221,8 +196,6 @@ background:#db2777;
 color:white;
 
 }
-
-/* PUASA */
 
 .puasa-item{
 
@@ -236,8 +209,6 @@ border-radius:12px;
 margin-bottom:12px;
 
 }
-
-/* SETTINGS */
 
 #setting-btn{
 
@@ -282,7 +253,7 @@ padding:10px;
 
 border-radius:15px;
 
-width:180px;
+width:200px;
 
 z-index:999;
 
@@ -295,19 +266,10 @@ color:#111827;
 
 }
 
-hr{
-
-border:
-1px solid rgba(255,255,255,0.1);
-
-}
-
 </style>
 </head>
 
 <body>
-
-<!-- SETTINGS -->
 
 <button id="setting-btn"
 onclick="toggleSettingMenu()">
@@ -320,6 +282,10 @@ onclick="toggleSettingMenu()">
 
 <button onclick="aturNomorGuru()">
 📱 Nomor Guru
+</button>
+
+<button onclick="toggleNotifications()">
+🛎️ Notifikasi
 </button>
 
 <button onclick="toggleKotaList()">
@@ -358,8 +324,6 @@ Surabaya
 
 </div>
 
-<!-- CONTAINER -->
-
 <div class="container">
 
 <h1>🕌 Waktunya Kita Sholat</h1>
@@ -371,8 +335,6 @@ Jadwal Sholat & Ibadah Realtime
 <p id="salam"
 style="text-align:center;">
 </p>
-
-<!-- GENDER -->
 
 <div class="card"
 id="gender-card">
@@ -395,8 +357,6 @@ Pilih Gender
 
 </div>
 
-<!-- MENU -->
-
 <div class="card">
 
 <div class="menu-flex">
@@ -416,8 +376,6 @@ Pilih Gender
 </div>
 
 </div>
-
-<!-- SHOLAT -->
 
 <div id="menu-sholat">
 
@@ -451,8 +409,6 @@ Tangerang Selatan
 
 </div>
 
-<!-- RED DAY -->
-
 <div class="card"
 id="red-day-card"
 style="display:none;">
@@ -469,8 +425,6 @@ style="margin-top:15px;">
 </div>
 
 </div>
-
-<!-- ABSEN -->
 
 <div class="card">
 
@@ -515,8 +469,6 @@ onclick="absenSholat('Sekolah')">
 
 </div>
 
-<!-- PUASA -->
-
 <div id="menu-puasa"
 style="display:none;">
 
@@ -535,8 +487,6 @@ Loading...
 </div>
 
 </div>
-
-<!-- RIWAYAT -->
 
 <div id="menu-riwayat"
 style="display:none;">
@@ -562,32 +512,16 @@ Belum ada riwayat...
 <script>
 
 let nama = "Sahabat";
-
-let kotaSekarang =
-"Tangerang Selatan";
-
+let kotaSekarang = "Tangerang Selatan";
 let jadwalHariIni = {};
-
 let riwayat = [];
-
 let gender = "";
-
 let redDay = false;
-
-let nomorGuru =
-localStorage.getItem(
-"nomorGuru"
-) || "";
-
-let totalPoin =
-parseInt(
-localStorage.getItem(
-"totalPoin"
-)
-) || 0;
+let nomorGuru = localStorage.getItem("nomorGuru") || "";
+let totalPoin = parseInt(localStorage.getItem("totalPoin")) || 0;
+let notifEnabled = localStorage.getItem("notifEnabled") === "true";
 
 /* MULAI */
-
 async function mulai(){
 
 nama =
@@ -617,10 +551,98 @@ loadPuasa();
 
 startCountdown();
 
+if(notifEnabled){
+requestNotificationPermission();
+}
+
+autoUpdateJadwal();
+
+}
+
+/* NOTIFIKASI */
+function toggleNotifications(){
+
+notifEnabled = !notifEnabled;
+localStorage.setItem("notifEnabled", notifEnabled);
+
+alert(notifEnabled ? 
+"🛎️ Notifikasi diaktifkan!" : 
+"🛎️ Notifikasi dimatikan!");
+
+if(notifEnabled){
+requestNotificationPermission();
+}
+
+}
+
+function requestNotificationPermission(){
+
+if("Notification" in window && Notification.permission !== "granted"){
+Notification.requestPermission();
+}
+
+}
+
+function showPrayerNotification(sholat){
+
+if(!notifEnabled || Notification.permission !== "granted") return;
+
+new Notification("🕌 Waktunya Sholat " + sholat, {
+
+body: "Sekarang sudah masuk waktu sholat " + sholat + ". Yuk sholat! 🤲",
+icon: "https://cdn-icons-png.flaticon.com/512/3009/3009750.png"
+
+});
+
+}
+
+/* NOMOR GURU */
+function aturNomorGuru(){
+
+let nomor = prompt("Masukkan nomor guru:", nomorGuru);
+
+if(nomor){
+
+nomor = nomor.trim().replace(/\s/g, '').replace(/-/g, '');
+
+if(nomor.startsWith("0")){
+nomor = "62" + nomor.substring(1);
+} else if(!nomor.startsWith("62")){
+nomor = "62" + nomor;
+}
+
+nomorGuru = nomor;
+localStorage.setItem("nomorGuru", nomor);
+
+alert("✅ Nomor guru berhasil disimpan!\n\nMembuka WhatsApp...");
+
+setTimeout(() => {
+window.open(`https://wa.me/${nomor}`, '_blank');
+}, 600);
+
+}
+
+}
+
+/* AUTO UPDATE JADWAL SETIAP HARI */
+function autoUpdateJadwal(){
+
+setInterval(async () => {
+
+const now = new Date();
+
+if(now.getHours() === 0 && now.getMinutes() < 10){
+
+await ambilJadwal();
+loadPuasa();
+
+}
+
+}, 300000); // setiap 5 menit
+
 }
 
 /* SETTINGS */
-
 function toggleSettingMenu(){
 
 const menu =
@@ -635,31 +657,6 @@ menu.style.display=="flex"
 "none"
 :
 "flex";
-
-}
-
-function aturNomorGuru(){
-
-const nomor =
-prompt(
-"Masukkan nomor guru:",
-nomorGuru
-);
-
-if(nomor){
-
-nomorGuru = nomor;
-
-localStorage.setItem(
-"nomorGuru",
-nomor
-);
-
-alert(
-"Nomor guru berhasil disimpan"
-);
-
-}
 
 }
 
@@ -694,8 +691,6 @@ document.getElementById(
 
 }
 
-/* MENU */
-
 function showMenu(menu){
 
 document.getElementById(
@@ -716,8 +711,6 @@ document.getElementById(
 
 }
 
-/* GENDER */
-
 function setGender(g){
 
 gender = g;
@@ -735,8 +728,6 @@ document.getElementById(
 }
 
 }
-
-/* RED DAY */
 
 function toggleRedDay(){
 
@@ -795,7 +786,6 @@ document.querySelector(
 }
 
 /* AMBIL JADWAL */
-
 async function ambilJadwal(){
 
 let kota = kotaSekarang;
@@ -876,7 +866,6 @@ html;
 }
 
 /* COUNTDOWN */
-
 function startCountdown(){
 
 setInterval(()=>{
@@ -961,6 +950,10 @@ menit + " menit " +
 
 detik + " detik";
 
+if(jam === 0 && menit <= 5 && menit >= 4){
+showPrayerNotification(next);
+}
+
 }
 
 },1000);
@@ -968,7 +961,6 @@ detik + " detik";
 }
 
 /* ABSEN */
-
 function toggleLokasi(){
 
 const menu =
@@ -1095,7 +1087,6 @@ alert(
 }
 
 /* RIWAYAT */
-
 function loadRiwayat(){
 
 riwayat =
@@ -1135,7 +1126,6 @@ html ||
 }
 
 /* PUASA */
-
 function loadPuasa(){
 
 const sekarang =
@@ -1160,8 +1150,6 @@ nama
 });
 
 }
-
-/* SENIN */
 
 for(let i=1;i<=31;i++){
 
@@ -1202,8 +1190,6 @@ t,
 
 }
 
-/* AYYAMUL BIDH */
-
 tambah(
 new Date(tahun,bulan,13),
 "Puasa Ayyamul Bidh"
@@ -1219,28 +1205,20 @@ new Date(tahun,bulan,15),
 "Puasa Ayyamul Bidh"
 );
 
-/* TARWIYAH */
-
 tambah(
 new Date(2026,4,25),
 "Puasa Tarwiyah"
 );
-
-/* ARAFAH */
 
 tambah(
 new Date(2026,4,26),
 "Puasa Arafah"
 );
 
-/* TASU'A */
-
 tambah(
 new Date(2026,5,24),
 "Puasa Tasu'a"
 );
-
-/* ASYURA */
 
 tambah(
 new Date(2026,5,25),
