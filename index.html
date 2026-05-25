@@ -555,8 +555,6 @@ if(notifEnabled){
 requestNotificationPermission();
 }
 
-autoUpdateJadwal();
-
 }
 
 /* NOTIFIKASI */
@@ -614,31 +612,9 @@ nomor = "62" + nomor;
 nomorGuru = nomor;
 localStorage.setItem("nomorGuru", nomor);
 
-alert("✅ Nomor guru berhasil disimpan!\n\nMembuka WhatsApp...");
-
-setTimeout(() => {
-window.open(`https://wa.me/${nomor}`, '_blank');
-}, 600);
+alert("✅ Nomor guru berhasil disimpan!");
 
 }
-
-}
-
-/* AUTO UPDATE JADWAL SETIAP HARI */
-function autoUpdateJadwal(){
-
-setInterval(async () => {
-
-const now = new Date();
-
-if(now.getHours() === 0 && now.getMinutes() < 10){
-
-await ambilJadwal();
-loadPuasa();
-
-}
-
-}, 300000); // setiap 5 menit
 
 }
 
@@ -950,17 +926,13 @@ menit + " menit " +
 
 detik + " detik";
 
-if(jam === 0 && menit <= 5 && menit >= 4){
-showPrayerNotification(next);
-}
-
 }
 
 },1000);
 
 }
 
-/* ABSEN */
+/* ABSEN + KIRIM LAPORAN */
 function toggleLokasi(){
 
 const menu =
@@ -1082,11 +1054,34 @@ JSON.stringify(riwayat)
 loadRiwayat();
 
 alert(
-"✅ Absen berhasil");
+"✅ Absen berhasil!");
+
+if(nomorGuru){
+
+if(confirm("Kirim laporan sholat ke guru via WhatsApp?")){
+
+const teks = encodeURIComponent(
+
+"Assalamu'alaikum,\n\n" +
+
+"Saya " + nama + " telah selesai melaksanakan sholat " + sholat + "\n" +
+
+"Pukul: " + jam + "\n" +
+
+"Lokasi: " + lokasi + "\n\n" +
+
+"Semoga Allah menerima ibadah kita. 🤲"
+
+);
+
+window.open(`https://wa.me/\( {nomorGuru}?text= \){teks}`, '_blank');
 
 }
 
-/* RIWAYAT */
+}
+
+}
+
 function loadRiwayat(){
 
 riwayat =
@@ -1125,7 +1120,6 @@ html ||
 
 }
 
-/* PUASA */
 function loadPuasa(){
 
 const sekarang =
